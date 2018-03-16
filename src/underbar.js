@@ -105,6 +105,39 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+    const output = [];
+    if (isSorted && iterator) {
+      _.each(array, (value, index, object) => {
+        if (value !== array[index - 1] && iterator(value, index, object)) {
+          output.push(value);
+        }
+      });
+    }  else if (isSorted && iterator === undefined) {
+      _.each(array, (value, index) => {
+        if (array[index] !== array[index - 1]) {
+          output.push(value);
+        }
+      });
+    } else if ((isSorted === false || isSorted === undefined) && iterator) {
+      let hash = {};
+      _.each(array, (value, index, object) => {
+        if (hash[value] === undefined) {
+          hash[value] = 0;
+          if (iterator(value, index, object)) {
+            output.push(value);
+          }
+        }
+      });
+    } else if ((isSorted === false || isSorted === undefined) && iterator === undefined) {
+      let hash = {};
+      _.each(array, (value, index) => {
+        if (hash[value] === undefined) {
+          hash[value] = 0;
+          output.push(value);
+        }
+      });
+    }
+    return output;
   };
 
 
